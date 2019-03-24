@@ -1,0 +1,5 @@
+---
+# defaults file for ansible_control_server
+ryezone_labs_provision_user: vagrant
+
+ansible_provision_user: "{{ ryezone_labs_provision_user }}"

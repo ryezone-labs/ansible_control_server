@@ -1,0 +1,33 @@
+---
+# tasks file for ansible_control_server
+- name: Create /opt/.ssh folder
+  file:
+    path: /opt/.ssh
+    owner: "{{ ansible_provision_user }}"
+    group: "{{ ansible_provision_user }}"
+    mode: 0700
+    state: directory
+  become: yes
+
+- name: Generate openssh keypair
+  command: "ssh-keygen -f /opt/.ssh/id_rsa -t rsa -b 4096 -N ''"
+  args:
+    creates: '/opt/.ssh/id_rsa'
+
+- name: Set permissions on /opt/.ssh/id_rsa
+  file:
+    path: '/opt/.ssh/id_rsa'
+    owner: "{{ ansible_provision_user }}"
+    group: "{{ ansible_provision_user }}"
+    mode: 0600
+    state: file
+  become: yes
+
+- name: Set permissions on /opt/.ssh/id_rsa.pub
+  file:
+    path: '/opt/.ssh/id_rsa.pub'
+    owner: "{{ ansible_provision_user }}"
+    group: "{{ ansible_provision_user }}"
+    mode: 0600
+    state: file
+  become: yes
