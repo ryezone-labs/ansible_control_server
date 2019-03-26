@@ -1,7 +1,7 @@
 ---
 - name: Check for certificate.
   stat:
-    path: "/opt/ansible/certificates/{{ldap.org}}.{{ldap.tld}}.crt"
+    path: "/opt/ansible/certificates/{{ ldap.org }}.{{ ldap.tld }}.crt"
   register: stat_result
 
 - name: Install pip
@@ -29,7 +29,7 @@
 # and a passphrase
 - name: generate private key
   openssl_privatekey:
-    path: "/opt/ansible/certificates/{{ldap.org}}.{{ldap.tld}}.pem"
+    path: "/opt/ansible/certificates/{{ ldap.org }}.{{ ldap.tld }}.pem"
     size: 4096
     type: RSA
     owner: "{{ ansible_provision_user }}"
@@ -41,22 +41,22 @@
 # Generate an OpenSSL Certificate Signing Request with Subject information
 - name: generate csr
   openssl_csr:
-    path: "/opt/ansible/certificates/{{ldap.org}}.{{ldap.tld}}.csr"
-    privatekey_path: "/opt/ansible/certificates/{{ldap.org}}.{{ldap.tld}}.pem"
-    common_name: "*.{{ldap.org}}.{{ldap.tld}}"
+    path: "/opt/ansible/certificates/{{ ldap.org }}.{{ ldap.tld }}.csr"
+    privatekey_path: "/opt/ansible/certificates/{{ ldap.org }}.{{ ldap.tld }}.pem"
+    common_name: "*.{{ ldap.org }}.{{ ldap.tld }}"
   when: stat_result.stat.exists == false
 
 - name: Generate a Self Signed OpenSSL certificate
   openssl_certificate:
-    path: "/opt/ansible/certificates/{{ldap.org}}.{{ldap.tld}}.crt"
-    privatekey_path: "/opt/ansible/certificates/{{ldap.org}}.{{ldap.tld}}.pem"
-    csr_path: "/opt/ansible/certificates/{{ldap.org}}.{{ldap.tld}}.csr"
+    path: "/opt/ansible/certificates/{{ ldap.org }}.{{ ldap.tld }}.crt"
+    privatekey_path: "/opt/ansible/certificates/{{ ldap.org }}.{{ ldap.tld }}.pem"
+    csr_path: "/opt/ansible/certificates/{{ ldap.org }}.{{ ldap.tld }}.csr"
     provider: selfsigned
   when: stat_result.stat.exists == false
 
 # Examples for some checks one could use the assertonly provider for:
 - name: Verify that the existing certificate is currently still valid
   openssl_certificate:
-    path: "/opt/ansible/certificates/{{ldap.org}}.{{ldap.tld}}.crt"
+    path: "/opt/ansible/certificates/{{ ldap.org }}.{{ ldap.tld }}.crt"
     provider: assertonly
     has_expired: False
