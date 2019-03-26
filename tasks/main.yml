@@ -31,3 +31,6 @@
     mode: 0600
     state: file
   become: yes
+
+- name: Create wildcard certificate
+  include_tasks: create_certificate.yml
