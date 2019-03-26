@@ -8,12 +8,12 @@
   package:
     name: python-pip
     state: present
-  when: stat_result.stat.exists == false
+  when: not stat_result.stat.exists
 
 - name: Ensure pyOpenSSL package is installed
   command: "{{ ansible_python_interpreter | default('/usr/bin/python') }} -m pip install pyOpenSSL"
   become: yes
-  when: stat_result.stat.exists == false
+  when: not stat_result.stat.exists
 
 - name: create files directory
   file:
@@ -22,7 +22,7 @@
       mode: 'u=rwx,g=rwx'
       owner: "{{ ansible_provision_user }}"
       group: "{{ ansible_provision_user }}"
-  when: stat_result.stat.exists == false
+  when: not stat_result.stat.exists
   become: yes
 
 # Generate an OpenSSL private key with the default values (4096 bits, RSA)
@@ -36,7 +36,7 @@
     group: "{{ ansible_provision_user }}"
     mode: 0644
   become: yes
-  when: stat_result.stat.exists == false
+  when: not stat_result.stat.exists
 
 # Generate an OpenSSL Certificate Signing Request with Subject information
 - name: generate csr
@@ -44,7 +44,7 @@
     path: "/opt/ansible/certificates/{{ ldap.org }}.{{ ldap.tld }}.csr"
     privatekey_path: "/opt/ansible/certificates/{{ ldap.org }}.{{ ldap.tld }}.pem"
     common_name: "*.{{ ldap.org }}.{{ ldap.tld }}"
-  when: stat_result.stat.exists == false
+  when: not stat_result.stat.exists
 
 - name: Generate a Self Signed OpenSSL certificate
   openssl_certificate:
@@ -52,7 +52,7 @@
     privatekey_path: "/opt/ansible/certificates/{{ ldap.org }}.{{ ldap.tld }}.pem"
     csr_path: "/opt/ansible/certificates/{{ ldap.org }}.{{ ldap.tld }}.csr"
     provider: selfsigned
-  when: stat_result.stat.exists == false
+  when: not stat_result.stat.exists
 
 # Examples for some checks one could use the assertonly provider for:
 - name: Verify that the existing certificate is currently still valid
